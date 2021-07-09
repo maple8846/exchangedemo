@@ -1,0 +1,156 @@
+syntax = "proto3";
+package pb;
+
+import "google/api/annotations.proto";
+
+service Node {
+    rpc Identify (IdentifyRequestV1) returns (IdentifyResponseV1) {
+    }
+    rpc NotifyOrder (NotifyOrderRequestV1) returns (NotifyOrderResponseV1) {
+    }
+    rpc NotifyFill (NotifyFillRequestV1) returns (NotifyFillResponseV1) {
+    }
+    rpc NotifySettle (NotifySettleRequestV1) returns (NotifySettleResponseV1) {
+    }
+    rpc NotifyFillIntent (NotifyFillIntentRequestV1) returns (NotifyFillIntentResponseV1){
+    } 
+    rpc NotifyFillConfirm (NotifyFillConfirmRequestV1) returns (NotifyFillConfirmResponseV1){
+    }
+    rpc NotifyDeleteIntent (NotifyDeleteIntentRequestV1) returns (NotifyDeleteIntentResponseV1){
+    }
+    rpc NotifyDeleteOrder (NotifyDeleteOrderRequestV1) returns (NotifyDeleteOrderResponseV1){
+    }
+    rpc NotifyGetBalances (NotifyGetBalancesRequestV1) returns (NotifyGetBalancesResponseV1){
+    }
+}
+
+message IdentifyRequestV1 {
+    string peerId = 1;
+    int32 protocolVersion = 2;
+}
+
+message IdentifyResponseV1 {
+    string peerId = 1;
+    int32 protocolVersion = 2;
+}
+
+message OrderV1 {
+    string orderId = 1;
+    string userPubKey = 2;
+    string makerAsset = 3;
+    string takerAsset = 4;
+    float quantity = 5;
+    float price = 6;
+    string cancelAt = 7;
+    string createdAt = 8;
+    string memo = 9;
+    bytes signature = 10;
+}
+
+message NotifyOrderRequestV1 {
+    OrderV1 order = 1;
+}
+
+message NotifyOrderResponseV1 {
+}
+
+message NotifyFillRequestV1 {
+    string orderId = 1;
+    string userPubkey = 2;
+    bytes preimageHash = 3;
+    bytes txHash = 4;
+    string IntentId = 55555;
+}
+
+message NotifyFillResponseV1 {
+    bytes txHash = 1;
+}
+
+message NotifySettleRequestV1 {
+    string orderId = 1;
+    bytes txHash = 2;
+}
+
+
+message NotifySettleResponseV1 {
+}
+
+
+message  NotifyFillIntentRequestV1 {
+  string intentId   = 1;
+  string userPubKey = 2;
+  string cpPubKey   = 3; 
+  string orderId    = 4;
+  float  quantity   = 5; 
+  string createdAt  = 6;
+  string cancelAt   = 7;
+  string memo       = 8;
+  bytes signature   = 9;
+  string makerAsset   = 10;
+  string takerAsset   = 11;
+  string status        = 12;
+  float price         =13;
+}
+
+
+
+message  NotifyFillIntentResponseV1 {
+}
+
+
+
+message  NotifyFillConfirmRequestV1 {
+    string intentId   = 1;
+    string OrderId    = 2;
+}
+
+
+message  NotifyFillConfirmResponseV1 {
+}
+
+
+
+
+message  NotifyDeleteIntentRequestV1 {
+    string intentId   = 1;
+}
+
+
+message  NotifyDeleteIntentResponseV1 {
+}
+
+message  NotifyDeleteOrderRequestV1 {
+    string OrderId   = 1;
+}
+
+
+message  NotifyDeleteOrderResponseV1 {
+}
+
+
+message NotifyGetBalancesRequestV1 {
+    string ChainId = 1;
+    string AssetId = 2;
+} 
+
+message NotifyGetBalancesResponse {
+    string ChainId          = 1;
+    string AssetId          = 2;
+    string Quantity         = 3;
+    string Address          = 4;
+    string AddressQuantity  = 5;
+}
+
+
+message NotifyGetBalancesResponseV1 {
+    repeated NotifyGetBalancesResponse Responses = 1;
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,171 @@
+syntax = "proto3";
+package pb;
+
+import "google/api/annotations.proto";
+
+service Node {
+    rpc NewLiquidityProofV1 (NewLiquidityProofRequestV1) returns (NewLiquidityProofResponseV1) {
+        option (google.api.http) = {
+            post: "/v1/liq_proofs"
+            body: "*"
+        };
+    }
+    rpc GetLiquidityProofV1 (GetLiquidityProofRequestV1) returns (GetLiquidityProofResponseV1) {
+        option (google.api.http) = {
+            get: "/v1/liq_proofs/{userPubkey}"
+        };
+    }
+    rpc PostOrderV1 (PostOrderRequestV1) returns (PostOrderResponseV1) {
+        option (google.api.http) = {
+            post: "/v1/orders"
+            body: "*"
+        };
+    }
+    rpc GetOrdersV1 (GetOrdersRequestV1) returns (GetOrdersResponseV1) {
+        option (google.api.http) = {
+            get: "/v1/orders/{userPubkey}"
+        };
+    }
+    rpc FillV1 (FillRequestV1) returns (FillResponseV1) {
+        option (google.api.http) = {
+            post: "/v1/fill_order"
+            body: "*"
+        };
+    }
+    rpc GetOpenFills (GetOpenFillsRequestV1) returns (GetOpenFillsResponseV1) {
+        option (google.api.http) = {
+            get: "/v1/open_fills/{userPubkey}"
+        };
+    }
+    rpc FulfillOrderV1 (FulfillOrderRequestV1) returns (FulfillOrderResponseV1) {
+    }
+}
+
+enum Asset {
+    BTC = 0;
+    ETH = 1;
+    USDT = 2;
+}
+
+message BigInt {
+    bytes values = 1;
+}
+
+message LiquidityProofV1 {
+    string id = 1;
+    string userPubkey = 2;
+    BigInt size = 3;
+    Asset asset = 4;
+    string address = 5;
+    bytes signature = 6;
+    bool broadcast = 7;
+    uint64 createdAt = 8;
+}
+
+enum Side {
+    BUY = 0;
+    SELL = 1;
+}
+
+enum Product {
+    BTC_USDT = 0;
+    ETH_USDT = 1;
+}
+
+message OrderV1 {
+    string id = 1;
+    string userPubkey = 2;
+    Side side = 3;
+    Product product = 4;
+    BigInt size = 5;
+    BigInt price = 6;
+    int64 cancelAt = 7;
+    string memo = 8;
+    uint64 createdAt = 9;
+}
+
+message FillV1 {
+    bytes htlcTxn = 1;
+    string orderId = 2;
+    string userPubkey = 3;
+    string counterpartyId = 4;
+    uint64 createdAt = 5;
+}
+
+enum FillStatus {
+    AWAITING_HTLCS = 0;
+    AWAITING_CONFIRMATIONS = 1;
+    COMPLETE = 2;
+}
+
+message NewLiquidityProofRequestV1 {
+    LiquidityProofV1 proof = 1;
+}
+
+message NewLiquidityProofResponseV1 {
+    LiquidityProofV1 proof = 1;
+}
+
+message GetLiquidityProofRequestV1 {
+    string userPubkey = 1;
+    uint64 createdBefore = 2;
+}
+
+message GetLiquidityProofResponseV1 {
+    repeated LiquidityProofV1 proofs = 1;
+}
+
+message PostOrderRequestV1 {
+    OrderV1 order = 1;
+}
+
+message PostOrderResponseV1 {
+    OrderV1 order = 1;
+}
+
+message GetOrdersRequestV1 {
+    string userPubkey = 1;
+}
+
+message GetOrdersResponseV1 {
+    repeated OrderV1 order = 1;
+}
+
+message FillRequestV1 {
+    FillV1 fill = 1;
+}
+
+message FillResponseV1 {
+    FillV1 fill = 1;
+}
+
+message FillWithMetadataV1 {
+    FillV1 fill = 1;
+    BigInt incomingAmount = 2;
+    BigInt outgoingAmount = 3;
+    uint64 incomingTimelock = 4;
+    uint64 outgoingTimelock = 5;
+    string incomingUserPubkey = 6;
+    string outgoingUserPubkey = 7;
+    string incomingChainId = 8;
+    string outgoingChainId = 9;
+    bytes preimageHash = 10;
+    string status = 11;
+}
+
+message GetOpenFillsRequestV1 {
+    string userPubkey = 1;
+}
+
+message GetOpenFillsResponseV1 {
+    repeated FillWithMetadataV1 fills = 1;
+}
+
+message FulfillOrderRequestV1 {
+    string orderId = 1;
+    FillV1 counterpartyFill = 2;
+}
+
+message FulfillOrderResponseV1 {
+    FillV1 fill = 1;
+}

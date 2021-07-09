@@ -1,0 +1,316 @@
+syntax = "proto3";
+package pb;
+
+import "google/api/annotations.proto";
+
+service Admin {
+    rpc ConnectPeer (ConnectPeerRequestV1) returns (ConnectPeerResponseV1) {
+        option (google.api.http) = {
+            post: "/v1/ConnectPeer"
+            body: "*"
+        };
+    }
+    rpc PostOrder (PostOrderRequestV1) returns (PostOrderResponseV1) {
+        option (google.api.http) = {
+            post: "/v1/NewOrder"
+            body: "*"
+        };
+    }
+
+    rpc GetOrder (GetOrderRequestV1) returns (GetOrderResponseV1) {
+        option (google.api.http) = {
+            post: "/v1/GetOrders"
+            body: "*"
+        };
+    }
+    
+
+    rpc FillIntent (FillIntentRequestV1) returns (FillIntentResponseV1) {
+        option (google.api.http) = {
+            post: "/v1/NewIntent"
+            body: "*"
+        };
+    }
+
+
+    rpc GetFillIntent (GetIntentRequestV1) returns (GetIntentResponseV1) {
+        option (google.api.http) = {
+            post: "/v1/GetIntents"
+            body: "*"
+        };
+    }
+
+    rpc FillConfirm (FillConfirmRequestV1) returns (FillConfirmResponseV1) {
+        option (google.api.http) = {
+            post: "/v1/FillOrder"
+            body: "*"
+        };
+    }
+
+    rpc CancelIntent (CancelIntentRequestV1) returns (CancelIntentResponseV1) {
+        option (google.api.http) = {
+            post: "/v1/CancelIntent"
+            body: "*"
+        };
+    }
+
+    rpc CancelOrder (CancelOrderRequestV1) returns (CancelOrderResponseV1) {
+        option (google.api.http) = {
+            post: "/v1/CancelOrder"
+            body: "*"
+        };
+    }
+
+    rpc GetBalances (GetBalancesRequestV1) returns (GetBalancesResponseV1){
+        option (google.api.http) = {
+            post: "/v1/GetBalances"
+            body: "*"
+        };
+    }
+
+
+    rpc GetFill (GetFillRequestV1) returns (GetFillResponseV1){
+        option (google.api.http) = {
+            post: "/v1/GetFills"
+            body: "*"
+        };
+    }
+    rpc GetNodeInfo (GetNodeInfoRequestV1) returns (GetNodeInfoResponseV1){
+        option (google.api.http) = {
+            get: "/v1/GetNodeInfo"
+        };
+    }
+}
+
+
+
+message ConnectPeerRequestV1 {
+    string peerId = 1;
+}
+
+
+message ConnectPeerResponseV1 {
+    string peerId = 1;
+}
+
+message PostOrderRequestV1 {
+    string makerAsset = 1;
+    string takerAsset = 2;
+    float quantity    = 3;
+    float price       = 4;
+    string cancelAt   = 5;
+    string memo       = 7;
+}
+
+
+
+message PostOrderResponseV1 {
+    string orderId    = 1;
+    string userPubkey = 2;
+    string makerAsset = 3;
+    string takerAsset = 4;
+    float quantity    = 5;
+    float price       = 6;
+    string cancelAt   = 7;
+    string createdAt  = 8;
+    string memo       = 9;  
+    bytes signature   = 10;
+}
+
+
+message GetOrderRequestV1 {
+    string orderId    = 1;
+    string userPubkey = 2;
+    string makerAsset = 3; 
+    string takerAsset = 4;
+}
+
+message GetOrderResponse {
+    string orderId    =1;
+    string userPubKey =2;
+    string makerAsset = 3;
+    string takerAsset = 4;
+    float quantity = 5;
+    float price = 6;
+    string cancelAt = 7;
+    string createdAt = 8;
+    string memo = 9;
+    bytes signature = 10;
+    string status = 11;
+}
+
+message GetOrderResponseV1 {
+    repeated GetOrderResponse Responses = 1;
+}
+
+
+
+message FillIntentRequestV1 {
+  string orderId   = 1;
+  float quantity  = 2;
+  string cancelAt  = 3;
+  string memo      = 4;
+}
+
+
+message FillIntentResponseV1 {
+
+  string intentId   = 1;
+  string userPubKey = 2;
+  string cpPubKey   = 3; 
+  string orderId    = 4;
+  float quantity   = 5; 
+  float price      = 6;
+  string makerAsset   = 7;
+  string takerAsset = 8;
+  string createdAt  = 9;
+  string cancelAt   = 10;
+  string memo       = 11;
+  bytes signature   = 12;
+  string status     = 13;
+}
+
+
+
+message GetIntentRequestV1 {
+  string orderId    =1;
+  string userPubKey =2;
+  string makerAsset = 3;
+  string takerAsset = 4;
+}
+
+
+
+message GetIntentResponse {
+  string intentId     = 1;
+  string orderId     = 2;
+  string userPubKey   = 3;
+  string cpPubKey     = 4;
+  string makerAsset   = 5;
+  string takerAsset    = 6;
+  float  quantity     = 7;
+      float price       = 8;
+  string createdAt    = 9;
+  string cancelAt     = 10;
+  string memo         = 11;
+  string signature    = 12;      
+    string status    = 13;  
+}
+
+
+
+message GetIntentResponseV1 {
+  repeated GetIntentResponse Responses = 1; 
+}
+
+
+
+
+
+
+message FillConfirmRequestV1 {
+  string orderId   = 1;
+  string intentId   = 2;
+}
+
+message FillConfirmResponseV1 {
+  string HTLCHash     =  1;
+  string UserPubKey   =  2;
+  string CpPubKey     =  3;
+  string OrderId      =  4;
+  string IntentId     =  5;
+  string MakerChain   =  6;
+  string TakerChain   =  7;
+  string ChainId      =  8;
+  string AssetId      = 9;
+  string MakerAddress = 10;
+  string TakerAddress = 11;
+  float Quantity      =  12;
+  string Timeout      =  13;
+  string pHash        =  14;
+  string CreatedAt    =  15;
+  string Memo         =  16;
+  string Signature    =  17;
+  bool Settled    =  18;
+}
+
+message CancelIntentRequestV1 {
+  string intentId =1;
+}
+
+
+message CancelIntentResponseV1 {
+}
+
+
+message CancelOrderRequestV1 {
+  string orderId =1;
+}
+
+
+
+message CancelOrderResponseV1 {
+}
+
+
+
+message GetBalancesRequestV1 {
+    string ChainId = 1;
+    string AssetId = 2;
+} 
+
+message GetBalancesResponse {
+    string ChainId          = 1;
+    string AssetId          = 2;
+    string Quantity         = 3;
+    string Address          = 4;
+    string AddressQuantity  = 5;
+}
+
+
+message GetBalancesResponseV1 {
+    repeated GetBalancesResponse Responses = 1;
+}
+
+message GetFillRequestV1 {
+    string OrderId         = 1;
+}
+
+
+message GetFillResponse {
+    string  HTLCHash   = 1;
+    string  MakerAddress = 2;
+    string  TakerAddress = 3; 
+    float   Quantity     = 4;
+    int32     Timeout      = 5;
+    string  pHash        = 6;
+    string  CreatedAt    = 7;
+    string  Memo         = 8;
+    string  Signature    = 9;
+    string chainId    =  10;
+    string assetId    =  11;
+}
+
+message GetFillResponseV1 {
+
+  string  UserPubKey   = 1; 
+  string CpPubKey      = 2;
+  string  OrderId      = 3;
+  string  IntentId     = 4;
+  string  makerchain   = 5;
+  string  takerchain   = 6;
+  repeated GetFillResponse Responses = 7;
+}
+
+
+
+
+message GetNodeInfoRequestV1 {
+  
+}
+
+
+message GetNodeInfoResponseV1 {
+  string userPubKey = 1;
+}
+
